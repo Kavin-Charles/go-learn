@@ -5,19 +5,16 @@ import (
 	"html/template"
 )
 
-func RunMovie(name string, w http.ResponseWriter) {
-	var MovieData MovieModel = ParseData(name, "m").(MovieModel)
+func RunMovie(MovieData MovieModel, w http.ResponseWriter) {
 	templ, err := template.ParseFiles("movie.html")
 	if err != nil {
 		fmt.Println("cannot load movie tempalte!")
 	}
-
 	err = templ.Execute(w,MovieData)
 	
 }
 
-func RunSeries(name string, w http.ResponseWriter){
-	var SeriesData SeriesModel = ParseData(name, "s").(SeriesModel)
+func RunSeries(SeriesData SeriesModel,w http.ResponseWriter){
 	templ, err := template.ParseFiles("series.html")
 	if err != nil {
 		fmt.Println("cannot load movie tempalte!")
@@ -27,11 +24,23 @@ func RunSeries(name string, w http.ResponseWriter){
 
 }
 
-func OpenWeb(data string, t string) {
+func OpenWeb(data string, t string, season int, episode int) {
+
+
+
 	if t == "m" {
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {RunMovie(data, w)})
+		entryData := ParseData(data, t)
+
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {RunMovie(entryData.(MovieModel), w)})
 	}	else {
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {RunSeries(data, w)})
+		Data := ParseData(data, t).(SeriesModel)
+		seriesData := SeriesModel {
+			Data.Name,
+			Data.ImdbId,
+			season,
+			episode,
+		}
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {RunSeries(seriesData, w)})
 
 	}
 

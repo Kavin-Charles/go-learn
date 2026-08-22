@@ -3,11 +3,14 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
+
+var Season, Episode = 0, 0
 
 
 func ParseData(name, t string) any {
-
+	name = strings.ReplaceAll(name, " ", "%20")
 	url := "http://www.omdbapi.com/?apikey=a7c2263a&s=" + name
 	resp, err := http.Get(url)
 	if err != nil{
@@ -32,29 +35,37 @@ func ParseData(name, t string) any {
 	}
 
 	var final any
+	finalList := make([]any, 0)
+	fmt.Println(len(searchData))
+	for m := 0; m < len(searchData) - 1; m++ {
+		if searchData[m].(map[string]any)["Type"].(string) == ty {
+			i := searchData[m].(map[string]any)
 
-	for _, i := range searchData {
-		if i.(map[string]any)["Type"].(string) == ty {
-			final = i
-			break
-		} 
-	}
-	i := final.(map[string]any)
-	if i["Type"] == "movie" {
-		model := MovieModel {
-		  i["Title"].(string),
-			i["imdbID"].(string),
-		}
-		return model
+			if ty == "movie" {
+			final = MovieModel {
+		i["Title"].(string),
+	i["imdbID"].(string),
 
-	} else {
-		model := SeriesModel {
+			}
+		} else {
+			final = SeriesModel {
 			i["Title"].(string),
 			i["imdbID"].(string),
-			1,
-			1,
+			Season,
+		Episode,
 		}
-		return model
+
+		}
+			finalList = append(finalList, final)
+		} 
 	}
 
+	fmt.Println("Enter an option :")
+	for o, i := range finalList {
+		fmt.Printf("%d. %s\n", o, i)
+	}
+	opt := 0
+	fmt.Scan(&opt)
+
+ return finalList[opt]
 }
