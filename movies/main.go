@@ -1,22 +1,17 @@
 package main 
 import (
-	"flag"
+	"fyne.io/fyne/v2/app"
 	"movies/engine"
 ) 
 
-var entryName, entryType string
-var Season, Episode int
 func main() {
-	getInput()
-	engine.OpenWeb(entryName, entryType, Season, Episode)
-}
+	a := app.NewWithID("com.kavin.movies")
+	w := a.NewWindow("Kavin Movies")
 
-func getInput() {
-	flag.StringVar(&entryName, "n", "Avengers", "Movie or Series Name")
-	flag.StringVar(&entryType, "t", "m", "Enter series or movie")
-	flag.IntVar(&Episode, "e", 1, "Enter series or movie")
-	flag.IntVar(&Season, "s", 1, "Enter series or movie")
-	flag.Parse()
-}
+	engine.OpenHomePage(w)
 
- 
+	//engine.RenderHomePage(w)
+
+	w.Show()
+	a.Run()
+}
