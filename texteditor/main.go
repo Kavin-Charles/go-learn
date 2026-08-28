@@ -16,9 +16,21 @@ func main(){
 	editor := widget.NewMultiLineEntry()
 	scroll := container.NewScroll(editor)
 
-//  saveButton := widget.NewButton("Same", func (){
-		
-//	})
+
+  saveButton := widget.NewButton("Save", func (){
+		fd := dialog.NewFileSave(func(w fyne.URIWriteCloser, err error){
+			
+			if w == nil || err != nil {
+				return
+			}
+
+			defer w.Close()
+			w.Write([]byte(editor.Text))
+
+		}, window)	
+
+		fd.Show()
+	})
 
 	openButton := widget.NewButton("Open", func (){
 		fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
@@ -42,7 +54,7 @@ func main(){
 
 	})
 
-	toolbar := container.NewHBox(openButton)
+	toolbar := container.NewHBox(openButton, saveButton)
 	content := container.NewBorder(toolbar, nil, nil, nil, scroll)
 
 	window.SetContent(content)
