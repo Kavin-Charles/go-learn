@@ -8,6 +8,8 @@ import (
 
 var Season, Episode = 0, 0
 
+//
+
 
 func ParseData(name, t string) any {
 	name = strings.ReplaceAll(name, " ", "%20")

@@ -11,3 +11,5 @@ type SeriesModel struct {
 	Season  int
 	Episode int
 }
+
+//THIS was AWESOME!
